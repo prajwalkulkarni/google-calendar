@@ -103,3 +103,47 @@ export const dateRangeCalculator = (dateSelector, dayIndex) => {
   }
   return datesToDays;
 };
+
+export const monthGridDrawer = (dateSelector, dayIndex) => {
+  const datesToDays = [];
+  const daysInTheMonth = new Date(
+    dateSelector.year,
+    months[dateSelector.month] + 1,
+    0
+  ).getDate();
+
+  // console.log(daysInTheMonth);
+  const start = dateSelector.date - dayIndex;
+  for (let i = start; i < start + 35; ++i) {
+    if (i <= 0) {
+      datesToDays.push({
+        date:
+          new Date(dateSelector.year, months[dateSelector.month], 0).getDate() +
+          i,
+        month: new Date(
+          dateSelector.year,
+          months[dateSelector.month],
+          0
+        ).toLocaleString("default", { month: "long" })
+      });
+    } else {
+      if (i > daysInTheMonth) {
+        datesToDays.push({
+          date: i - daysInTheMonth,
+          month: Object.keys(months).find(
+            (k) => months[k] === months[dateSelector.month] + 1
+          )
+        });
+      } else {
+        datesToDays.push({ date: i, month: dateSelector.month });
+      }
+    }
+  }
+  const splittedArray = [];
+  while (datesToDays.length > 0) {
+    splittedArray.push(datesToDays.splice(0, 7));
+  }
+
+  return splittedArray;
+};
+
