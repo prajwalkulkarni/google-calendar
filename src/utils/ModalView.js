@@ -4,7 +4,11 @@ import Select from "@mui/material/Select";
 import Modal from "@mui/material/Modal";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
+
 import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Stack from "@mui/material/Stack";
 
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -98,29 +102,31 @@ export default function ModalView(props) {
           </Select>
         </FormControl>
         <br />
-        <Button
-          className="field-block"
-          variant="contained"
-          onClick={() => {
-            props.handleSubmit(title, currTo, currFrom);
-            setCurrFrom("");
-            setCurrTo("");
-            setToRange([""]);
-            setTitle("");
-          }}
-        >
-          Save
-        </Button>
-        &nbsp; &nbsp;
-        {selector.update && (
+        <Stack direction="row" alignItems="center" spacing={2}>
           <Button
             className="field-block"
             variant="contained"
-            onClick={() => props.onDelete(selector.id)}
+            onClick={() => {
+              props.handleSubmit(title, currTo, currFrom);
+              setCurrFrom("");
+              setCurrTo("");
+              setToRange([""]);
+              setTitle("");
+            }}
           >
-            Delete
+            Save
           </Button>
-        )}
+
+          {selector.update && (
+            <IconButton
+              aria-label="delete"
+              onClick={() => props.onDelete(selector.id)}
+              size="large"
+            >
+              <DeleteIcon />
+            </IconButton>
+          )}
+        </Stack>
       </Box>
     </Modal>
   );
