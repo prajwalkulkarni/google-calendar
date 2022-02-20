@@ -1,6 +1,8 @@
 import { useState } from "react";
 import "./CalendarView.css";
-import FillerWrapper from "./FillerWrapper";
+import { monthGridDrawer } from "../utils/misc";
+
+import IconButton from "@mui/material/IconButton";
 
 import { modeAction, dateAction, monthTaskAction } from "../store/slices";
 import { weekdays, months } from "../utils/data";
@@ -11,69 +13,48 @@ import MonthModalView from "../utils/MonthModalView";
 const monthRows = new Array(5).fill(new Array(7).fill(7));
 
 export default function WeekView() {
+  //Dispatch instance
+  const dispatch = useDispatch();
+
+  //State selectors
   const dateSelector = useSelector((arg) => arg.date);
   const monthTaskSelector = useSelector((arg) => arg.monthtask);
 
+  //Component state
   const [weekDate, setWeekDate] = useState([]);
   const [open, setOpen] = useState(false);
   // console.log(weekDate,selector)
-  const dispatch = useDispatch();
+
+  //Filtered results
   const dayIndex = weekdays.findIndex((day) => day === dateSelector.day);
 
+  //Side effect handlers
   useEffect(() => {
     // console.log(dateSelector.month)
-    const datesToDays = [];
-    const daysInTheMonth = new Date(
-      dateSelector.year,
-      months[dateSelector.month] + 1,
-      0
-    ).getDate();
-
-    // console.log(daysInTheMonth);
-    const start = dateSelector.date - dayIndex;
-    for (let i = start; i < start + 35; ++i) {
-      if (i <= 0) {
-        datesToDays.push({
-          date:
-            new Date(
-              dateSelector.year,
-              months[dateSelector.month],
-              0
-            ).getDate() + i,
-          month: new Date(
-            dateSelector.year,
-            months[dateSelector.month],
-            0
-          ).toLocaleString("default", { month: "long" })
-        });
-      } else {
-        if (i > daysInTheMonth) {
-          datesToDays.push({
-            date: i - daysInTheMonth,
-            month: Object.keys(months).find(
-              (k) => months[k] === months[dateSelector.month] + 1
-            )
-          });
-        } else {
-          datesToDays.push({ date: i, month: dateSelector.month });
-        }
-      }
-    }
-    const splittedArray = [];
-    while (datesToDays.length > 0) {
-      splittedArray.push(datesToDays.splice(0, 7));
-    }
+    const splittedArray = monthGridDrawer(dateSelector, dayIndex);
     setWeekDate(splittedArray);
-  }, [
-    dateSelector.month,
-    dateSelector.year,
-    dateSelector.date,
-    dateSelector.day,
-    dayIndex
-  ]);
+  }, [dateSelector, dayIndex]);
 
+  useEffect(() => {
+    // console.log(JSON.parse(localStorage.getItem("monthtasks")))
+    dispatch(
+      monthTaskAction.setTasks({
+        tasks: JSON.parse(localStorage.getItem("monthtasks")) ?? []
+      })
+    );
+  }, [dispatch]);
+
+  useEffect(() => {
+    // console.log(monthTaskSelector.monthtasks);
+    localStorage.setItem(
+      "monthtasks",
+      JSON.stringify(monthTaskSelector.monthtasks)
+    );
+  }, [monthTaskSelector.monthtasks]);
+
+  //Function handlers
   const handleOpen = () => {
-    console.log("Regular open");
+    // console.log("Regular open");
     dispatch(monthTaskAction.setStatus({ state: false, id: null }));
     setOpen(true);
   };
@@ -125,13 +106,13 @@ export default function WeekView() {
   };
 
   const handleUpdate = (id) => {
-    console.log(id);
+    // console.log(id);
     dispatch(monthTaskAction.setStatus({ state: true, id }));
     setOpen(true);
   };
 
   const deleteTask = () => {
-    console.log(monthTaskSelector.isUpdate.id);
+    // console.log(monthTaskSelector.isUpdate.id);
     dispatch(
       monthTaskAction.deleteTask({
         id: monthTaskSelector.isUpdate.id
@@ -166,27 +147,38 @@ export default function WeekView() {
     currMonth = Object.values(months).findIndex(
       (month) => months[currMonth] === month
     );
-    if (currDate === toDate && currMonth === toMonth) {
+    if (currDate === fromDate && currMonth === fromMonth) {
+      return (
+        <div
+          style={{
+            position: "absolute",
+            top: "70%",
+            width: "97%",
+            left: "5%",
+            borderRadius: "5px 0px 0px 5px",
+            zIndex: 15,
+            backgroundColor: "red"
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            e.nativeEvent.stopImmediatePropagation();
+            handleUpdate(id);
+          }}
+        >
+          {title}
+        </div>
+      );
+    } else if (currDate === toDate && currMonth === toMonth) {
       if (monthTaskSelector.monthtasks[i + 1]) {
         i += 1;
       }
       return (
-        // <FillerWrapper
-        //   title={title}
-        //   onClick={(e) => {
-        //     e.stopPropagation();
-        //     e.nativeEvent.stopImmediatePropagation();
-        //     handleUpdate(id);
-        //   }}
-        //   onDelete={deleteTask}
-        // >
-        //   {title}
-        // </FillerWrapper>
         <div
           style={{
             position: "absolute",
-            top: "50%",
-            width: "102%",
+            top: "70%",
+            width: "95%",
+            borderRadius: "0px 5px 5px 0px",
             zIndex: 15,
             backgroundColor: "red"
           }}
@@ -213,7 +205,7 @@ export default function WeekView() {
         <div
           style={{
             position: "absolute",
-            top: "50%",
+            top: "70%",
             width: "102%",
             zIndex: 15,
             backgroundColor: "red"
@@ -230,8 +222,63 @@ export default function WeekView() {
     }
   };
 
-  // console.log(weekDate);
   let i = 0;
+
+  const weekDaysLabel = weekdays.map((weekday) => {
+    return (
+      <div className="grid-item" key={Math.random()}>
+        <p className="timelabel__date">{weekday}</p>
+      </div>
+    );
+  });
+
+  const mapTasksToDays = monthRows.map((week, index) => {
+    return week.map((day, idx) => {
+      return (
+        <div
+          className="grid-item-week"
+          key={Math.random()}
+          onClick={handleOpen}
+        >
+          {weekDate.length > 0 ? (
+            <>
+              <p className="timelabel__date">{weekDate[index][idx]?.month}</p>
+              <p
+                className="timelabel__date"
+                onClick={() =>
+                  navigateHandler(
+                    weekDate[index][idx]?.date,
+                    weekdays[idx],
+                    weekDate[index][idx]?.month
+                  )
+                }
+              >
+                <IconButton
+                 size="small">
+                 {weekDate[index][idx]?.date}
+               
+                </IconButton>
+               
+              </p>
+              {monthTaskSelector.monthtasks.length > 0
+                ? taskFiller(
+                    monthTaskSelector.monthtasks[i].title,
+                    weekDate[index][idx]?.date,
+                    weekDate[index][idx]?.month,
+                    monthTaskSelector.monthtasks[i].fromDate,
+                    monthTaskSelector.monthtasks[i].fromMonth,
+                    monthTaskSelector.monthtasks[i].toDate,
+                    monthTaskSelector.monthtasks[i].toMonth,
+                    monthTaskSelector.monthtasks[i].id
+                  )
+                : null}
+            </>
+          ) : null}
+        </div>
+      );
+    });
+  });
+
   return (
     <div className="grid-monthview">
       <MonthModalView
@@ -241,56 +288,8 @@ export default function WeekView() {
         onDelete={deleteTask}
       />
 
-      {weekdays.map((weekday) => {
-        return (
-          <div className="grid-item" key={Math.random()}>
-            <p className="timelabel__date">{weekday}</p>
-          </div>
-        );
-      })}
-      {monthRows.map((week, index) => {
-        return week.map((day, idx) => {
-          return (
-            <div
-              className="grid-item-week"
-              key={Math.random()}
-              onClick={handleOpen}
-            >
-              {weekDate.length > 0 ? (
-                <>
-                  <p className="timelabel__date">
-                    {weekDate[index][idx]?.month}
-                  </p>
-                  <p
-                    className="timelabel__date"
-                    onClick={() =>
-                      navigateHandler(
-                        weekDate[index][idx]?.date,
-                        weekdays[idx],
-                        weekDate[index][idx]?.month
-                      )
-                    }
-                  >
-                    {weekDate[index][idx]?.date}
-                  </p>
-                  {monthTaskSelector.monthtasks.length > 0
-                    ? taskFiller(
-                        monthTaskSelector.monthtasks[i].title,
-                        weekDate[index][idx]?.date,
-                        weekDate[index][idx]?.month,
-                        monthTaskSelector.monthtasks[i].fromDate,
-                        monthTaskSelector.monthtasks[i].fromMonth,
-                        monthTaskSelector.monthtasks[i].toDate,
-                        monthTaskSelector.monthtasks[i].toMonth,
-                        monthTaskSelector.monthtasks[i].id
-                      )
-                    : null}
-                </>
-              ) : null}
-            </div>
-          );
-        });
-      })}
+      {weekDaysLabel}
+      {mapTasksToDays}
     </div>
   );
 }
