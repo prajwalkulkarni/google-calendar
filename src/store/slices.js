@@ -76,7 +76,73 @@ export const eventSlice = createSlice({
   }
 });
 
+export const monthTaskSlice = createSlice({
+  name: "monthtask",
+  initialState: {
+    monthtasks: [],
+    isUpdate: {
+      update: false,
+      id: null
+    }
+  },
+  reducers: {
+    setTasks: (state, action) => {
+      // console.log(action.payload);
+      state.monthtasks = action.payload.tasks;
+    },
+    addTask: (state, action) => {
+      state.monthtasks.push(action.payload.task);
+      state.monthtasks.sort((a, b) => {
+        if (b.fromMonth === a.toMonth && b.fromDate > a.toDate) {
+          return -1;
+        } else if (b.fromMonth > a.toMonth) {
+          console.log("Run");
+          return -1;
+        } else if (b.toMonth === a.fromMonth && b.toDate < a.fromDate) {
+          return 1;
+        }
+        return 0;
+      });
+    },
+    updateTask: (state, action) => {
+      const copy = state.monthtasks.slice();
+
+      // console.log(action.payload.task.id);
+      const item = copy.findIndex((task) => task.id === action.payload.task.id);
+      if (item >= 0) {
+        copy[item] = action.payload.task;
+
+        state.monthtasks = [...copy];
+        state.monthtasks.sort((a, b) => {
+          if (b.fromMonth === a.toMonth && b.fromDate > a.toDate) {
+            return -1;
+          } else if (b.fromMonth > a.toMonth) {
+            console.log("Run");
+            return -1;
+          } else if (b.toMonth === a.fromMonth && b.toDate < a.fromDate) {
+            return 1;
+          }
+          return 0;
+        });
+      }
+    },
+    deleteTask: (state, action) => {
+      state.monthtasks = state.monthtasks.filter(
+        (task) => task.id !== action.payload.id
+      );
+    },
+    setStatus: (state, action) => {
+      // console.log(action.payload)
+      state.isUpdate = {
+        update: action.payload.state,
+        id: action.payload.id
+      };
+    }
+  }
+});
+
 export const dateAction = dateSlice.actions;
 export const modeAction = modeSlice.actions;
 
 export const taskAction = eventSlice.actions;
+export const monthTaskAction = monthTaskSlice.actions;
