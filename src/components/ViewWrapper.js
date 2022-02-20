@@ -31,11 +31,14 @@ export default function ViewWrapper() {
   // console.log(renderComponent)
   return (
     <div className="view_wrapper">
-      {render.calendarVisible && (
+      {/* {render.calendarVisible && (
         <div className="wt1">
           <CalendarView />
         </div>
-      )}
+      )} */}
+      <div className={`drawer ${render.calendarVisible && "visible"}`}>
+        <CalendarView />
+      </div>
       {renderComponent()}
     </div>
   );
