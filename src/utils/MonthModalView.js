@@ -9,6 +9,10 @@ import DateRangePicker from "@mui/lab/DateRangePicker";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Stack from "@mui/material/Stack"
+
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -69,6 +73,7 @@ export default function MonthModalView(props) {
           />
         </LocalizationProvider>
         <br />
+        <Stack direction="row" alignItems="center" spacing={2}>
         <Button
           className="field-block"
           variant="contained"
@@ -78,16 +83,17 @@ export default function MonthModalView(props) {
         >
           Save
         </Button>
-        &nbsp; &nbsp;
+        
         {selector.update && (
-          <Button
-            className="field-block"
-            variant="contained"
+          <IconButton
+            aria-label="delete"
+            size="large"
             onClick={() => props.onDelete(selector.id)}
           >
-            Delete
-          </Button>
+            <DeleteIcon />
+          </IconButton>
         )}
+        </Stack>
       </Box>
     </Modal>
   );
