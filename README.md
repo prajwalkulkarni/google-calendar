@@ -12,5 +12,5 @@
 <br/>
 <b> Styling components - Material UI
 <br/>
-  <hr/>
-  Live demo: [React google calendar](https://csb-0m117.netlify.app/)
+<hr/>
+Live demo: [React google calendar] (https://csb-0m117.netlify.app/)
