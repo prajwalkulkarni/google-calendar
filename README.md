@@ -10,7 +10,7 @@
 </ul>
 
 <br/>
-<b> Styling components - Material UI
+<b> Styling components - Material UI</b>
 <br/>
 <hr/>
 Live demo: [React google calendar](https://csb-0m117.netlify.app/)
