@@ -39,7 +39,10 @@ export default function ViewWrapper() {
       <div className={`drawer ${render.calendarVisible && "visible"}`}>
         <CalendarView />
       </div>
+//       {renderComponent()}
+      <div className='calendarHolder'>
       {renderComponent()}
+      </div>
     </div>
   );
 }
