@@ -1,8 +1,41 @@
 .view_wrapper {
   display: flex;
   flex-direction: row;
+  /* flex-direction: column; */
   /* flex-wrap:wrap; */
+  /* width: 100%; */
   padding: 1rem;
+  /* overflow-x: scroll; */
+}
+
+.calendarHolder {
+  position: relative;
+  display: inline;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: scroll;
+  /* flex-basis:3; */
+  background-color: white;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: lightgrey;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: gray;
 }
 
 .drawer {
@@ -14,6 +47,19 @@
 .drawer.visible {
   opacity: 1;
   width: 25%;
+  /* flex-basis: 1; */
   /* transform: translateX(0%); */
   transition: width 0.3s, opacity 0.4s ease-in;
 }
+
+@media (min-width: 100px) and (max-width: 900px) {
+  .view_wrapper {
+    display: flex;
+    flex-direction: column;
+    /* flex-wrap: wrap; */
+    /* width: 100%; */
+    padding: 1rem;
+    /* overflow-x: scroll; */
+  }
+}
+  
