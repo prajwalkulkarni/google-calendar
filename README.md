@@ -1,6 +1,6 @@
 # google-calendar
 
-## Google calendar clone - Assignment
+## Google calendar clone
 
 ### Technologies used:
 <ul>
@@ -10,7 +10,7 @@
 </ul>
 
 <br/>
-<b> Styling components - Material UI</b>
+<b> Styling components - Material UI, Styled components</b>
 <br/>
 
 Live demo: [React google calendar](https://csb-0m117.netlify.app/)
