@@ -5,7 +5,7 @@
 ### Technologies used:
 <ul>
   <li>React</li>
-  <li>Redux</li>
+  <li>State management - Redux</li>
   <li>localStorage - for persistence</li> 
 </ul>
 
