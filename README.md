@@ -6,7 +6,7 @@
 <ul>
   <li>React</li>
   <li>State management - Redux</li>
-  <li>localStorage - for persistence</li> 
+  <li>Data Persistence - localStorage </li> 
 </ul>
 
 <br/>
