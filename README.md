@@ -3,7 +3,7 @@
 ### Technologies used:
 - React
 - State management - Redux
-- Data Persistence - localStorage
+- Data Persistence - `localStorage`
 
 <br/>
 <b> Styling components - Material UI, Styled components</b>
