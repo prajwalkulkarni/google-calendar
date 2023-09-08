@@ -1,6 +1,6 @@
 ## Google calendar clone
 
-### Technologies used:
+### Libraries and Data Persistence:
 - React
 - State management - Redux
 - Data Persistence - `localStorage`
